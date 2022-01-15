@@ -67,7 +67,9 @@
 5910 rem does not compute occlusion
 5920 gosub 5990
 5930 gosub 6590
-5940 return
+5940 ntriangles = 0
+5950 nrectangles = 0
+5960 return
 
 5990 if ntriangles == 0 then return
 6000 for objecti=0 to ntriangles-1 step 1
