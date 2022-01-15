@@ -189,10 +189,10 @@
 7260 x4 = x4 * FOV / z4 + xscreen/2
 7270 y4 = y4 * FOV / z4 + yscreen/2
 
-7300 hplot x1, y1 to x2, y2
-7310 hplot x2, y2 to x3, y3
-7320 hplot x3, y3 to x4, y4
-7330 hplot x4, y4 to x1, y1
+7340 hplot x1, y1 to x2, y2
+7440 hplot x2, y2 to x3, y3
+7540 hplot x3, y3 to x4, y4
+7640 hplot x4, y4 to x1, y1
 
-7340 next objecti
-7350 return
+7700 next objecti
+7710 return
