@@ -1,0 +1,74 @@
+10 hgr
+20 HCOLOR = 3
+
+30 dim frameTriangles(12*20)
+40 frameTriangleObjects = 0
+50 dim frameRectangles(16*20)
+60 frameRectangleObjects = 0
+61 rem to draw a triangle, add the relevant points to frameTriangles -
+62 rem x1,y1,z1,x2,y2,z2,x3,y3,z3 - and increment frameTriangleObjects
+63 rem drawing a rectangle is the analagous with appropriate variables
+64 rem the arrays have space for 20 at once
+
+70 cameraX = 0
+80 cameraY = 0
+90 cameraZ = 0
+100 cameraYrot = 0
+101 rem choosing to ignore x and z rotation as they are not needed for this
+102 rem rotation of 0 is in the +x direction; angles are 0-2π
+
+5998 rem subprotocol to draw all existing objects in the frame
+5999 rem computes occlusion
+6000 for objecti=0 to frameTriangleObjects
+6010 v1x = frameTriangleObjects(9 * objecti + 0)
+6020 v1y = frameTriangleObjects(9 * objecti + 1)
+6030 v1z = frameTriangleObjects(9 * objecti + 2)
+6040 v2x = frameTriangleObjects(9 * objecti + 3)
+6050 v2y = frameTriangleObjects(9 * objecti + 4)
+6060 v2z = frameTriangleObjects(9 * objecti + 5)
+6070 v3x = frameTriangleObjects(9 * objecti + 6)
+6080 v3y = frameTriangleObjects(9 * objecti + 7)
+6090 v3z = frameTriangleObjects(9 * objecti + 8)
+
+6000 v1dist = sqr(v1x*v1x + v1z*v1z)
+6010 v1angle = atn(v1x/v1z)
+6020 if v1z < 0 then v1angle += PI/2
+6030 rotv1x = v1dist * cos(v1angle - cameraYrot)
+6040 rotv1z = v1dist * sin(v1angle - cameraYrot)
+6050 rotv1y = v1y
+6060 shiftv1x = rotv1x + cameraX
+6070 shiftv1z = rotv1z + cameraZ
+6080 shiftv1y = rotv1y + cameraY
+
+6100 v2dist = sqr(v2x*v2x + v2z*v2z)
+6110 v2angle = atn(v2x/v2z)
+6120 if v2z < 0 then v2angle += PI/2
+6130 rotv2x = v2dist * cos(v2angle - cameraYrot)
+6140 rotv2z = v2dist * sin(v2angle - cameraYrot)
+6150 rotv2y = v2y
+6160 shiftv2x = rotv2x + cameraX
+6170 shiftv2z = rotv2z + cameraZ
+6180 shiftv2y = rotv2y + cameraY
+
+6200 v3dist = sqr(v3x*v3x + v3z*v3z)
+6210 v3angle = atn(v3x/v3z)
+6220 if v3z < 0 then v3angle += PI/3
+6230 rotv3x = v3dist * cos(v3angle - cameraYrot)
+6240 rotv3z = v3dist * sin(v3angle - cameraYrot)
+6250 rotv3y = v3y
+6260 shiftv3x = rotv3x + cameraX
+6270 shiftv3z = rotv3z + cameraZ
+6280 shiftv3y = rotv3y + cameraY
+
+6300 projv1x = shiftv1x / shiftv1z
+6310 projv1y = shiftv1y / shiftv1z
+6320 projv2x = shiftv2x / shiftv2z
+6330 projv2y = shiftv2y / shiftv2z
+6340 projv3x = shiftv3x / shiftv3z
+6350 projv3y = shiftv3y / shiftv3z
+
+6400 hplot projv1x, projv1y, projv2x, projv2y
+6410 hplot projv2x, projv2y, projv3x, projv3y
+6420 hplot projv1x, projv1y, projv3x, projv3y
+
+6500 return
