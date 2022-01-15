@@ -33,12 +33,35 @@
 128 triangles(8) = 1
 
 129 ntriangles = 1
-130 gosub 5900
-140 end
+
+130 rectangles(0) = 0
+131 rectangles(1) = 0
+132 rectangles(2) = 1
+
+133 rectangles(3) = 10
+134 rectangles(4) = 0
+135 rectangles(5) = 1
+
+136 rectangles(6) = 0
+137 rectangles(7) = 0
+138 rectangles(8) = 1
+
+139 rectangles(9) = 0
+140 rectangles(10) = 0
+141 rectangles(11) = 1
+
+142 nrectangles = 1
+
+150 gosub 5900
+160 end
 
 5900 rem subprotocol to draw all existing objects in the frame
 5910 rem does not compute occlusion
-5990 if ntriangles == 0 then gosub 6590
+5920 gosub 5990
+5930 gosub 6590
+5940 return
+
+5990 if ntriangles == 0 then return
 6000 for objecti=0 to ntriangles-1 step 1
 6010 x1 = triangles(9 * objecti + 0)
 6020 y1 = triangles(9 * objecti + 1)
@@ -61,10 +84,10 @@
 6180 y1 = y1 + ycamera
 
 6200 dist = sqr(x2*x2 + z2*z2)
-6210 dist = atn(x2/z2)
-6220 if z2 < 0 then dist = dist + PI/2
-6230 x2 = dist * sin(dist - yrot)
-6240 z2 = dist * cos(dist - yrot)
+6210 angle = atn(x2/z2)
+6220 if z2 < 0 then angle = angle + PI/2
+6230 x2 = dist * sin(angle - yrot)
+6240 z2 = dist * cos(angle - yrot)
 6250 y2 = y2
 6260 x2 = x2 + xcamera
 6270 z2 = z2 + zcamera
@@ -87,11 +110,14 @@
 6440 x3 = x3 / z3 + xscreen/2
 6450 y3 = y3 / z3 + yscreen/2
 
+6451 PRINT "TRIANGLE ";x1;" ";y1;" ";x2;" ";y2;" ";x3;" ";y3
+
 6500 hplot x1, y1 to x2, y2
 6510 hplot x2, y2 to x3, y3
 6520 hplot x3, y3 to x1, y1
 
 6530 next objecti
+6540 return
 
 6590 if nrectangles == 0 then return
 6600 for objecti=0 to nrectangles-1 step 1
@@ -111,18 +137,18 @@
 6800 dist = sqr(x1*x1 + z1*z1)
 6810 angle = atn(x1/z1)
 6820 if z1 < 0 then angle = angle + PI/2
-6830 x1 = dist * cos(angle - yrot)
-6840 z1 = dist * sin(angle - yrot)
+6830 x1 = dist * sin(angle - yrot)
+6840 z1 = dist * cos(angle - yrot)
 6850 y1 = y1
 6860 x1 = x1 + xcamera
 6870 z1 = z1 + zcamera
 6880 y1 = y1 + ycamera
 
 6900 dist = sqr(x2*x2 + z2*z2)
-6910 dist = atn(x2/z2)
-6920 if z2 < 0 then dist = dist + PI/2
-6930 x2 = dist * cos(dist - yrot)
-6940 z2 = dist * sin(dist - yrot)
+6910 angle = atn(x2/z2)
+6920 if z2 < 0 then angle = angle + PI/2
+6930 x2 = dist * sin(angle - yrot)
+6940 z2 = dist * cos(angle - yrot)
 6950 y2 = y2
 6960 x2 = x2 + xcamera
 6970 z2 = z2 + zcamera
@@ -157,11 +183,12 @@
 7240 x4 = x4 / z4 + xscreen/2
 7250 y4 = y4 / z4 + yscreen/2
 
+7251 PRINT "RECTANGLE ";x1;" ";y1;" ";x2;" ";y2;" ";x3;" ";y3;" ";x4;" ";y4
+
 7300 hplot x1, y1 to x2, y2
 7310 hplot x2, y2 to x3, y3
 7320 hplot x3, y3 to x4, y4
 7330 hplot x4, y4 to x1, y1
 
 7340 next objecti
-
 7350 return
