@@ -55,7 +55,6 @@
 142 nrectangles = 1
 
 144 for i=0 to 200
-145 rem PRINT i
 146 yrot = yrot + 0.1
 149 HCOLOR = 3
 150 gosub 5900
@@ -105,8 +104,6 @@
 6340 x3 = tx
 6350 y3 = ty
 6360 z3 = tz
-
-6390 rem PRINT x1;" ";y1;" ";z1;" ";x2;" ";y2;" ";z2;" ";x3;" ";y3;" ";z3
 
 6400 x1 = x1 * FOV / z1 + xscreen/2
 6410 y1 = y1 * FOV / z1 + yscreen/2
