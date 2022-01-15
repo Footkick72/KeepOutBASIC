@@ -98,9 +98,9 @@
 6250 y2 = ty
 6260 z2 = tz
 
-6300 t3 = x1
-6310 t3 = y1
-6320 t3 = z1
+6300 tx = x3
+6310 ty = y3
+6320 tz = z3
 6330 gosub 8100
 6340 x3 = tx
 6350 y3 = ty
@@ -200,4 +200,5 @@
 8140 oz = tz
 8150 tx = ox * cos(yrot) - oz * sin(yrot)
 8160 tz = ox * sin(yrot) + oz * cos(yrot)
+8165 if tz < 0 then tz = 0.0001
 8170 return
