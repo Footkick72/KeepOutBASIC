@@ -54,13 +54,15 @@
 
 142 nrectangles = 1
 
-144 for i=0 to 200
+143 for i=0 to 200
+145 nrectangles = 1
 146 yrot = yrot + 0.1
 149 HCOLOR = 3
 150 gosub 5900
-151 HCOLOR = 0
-152 gosub 5900
-153 next i
+152 nrectangles = 1
+153 HCOLOR = 0
+154 gosub 5900
+155 next i
 160 end
 
 5900 rem subprotocol to draw all existing objects in the frame
