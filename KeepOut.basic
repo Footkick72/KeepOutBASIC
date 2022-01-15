@@ -1,6 +1,8 @@
 1 hgr
 2 HCOLOR = 3
 3 PI = 3.141592653
+4 xscreen = 280
+5 yscreen = 192
 
 30 dim triangles(12*20)
 40 ntriangles = 0
@@ -20,20 +22,21 @@
 
 120 triangles(0) = 2
 121 triangles(1) = 3
-122 triangles(2) = 4
+122 triangles(2) = 1
 123 triangles(3) = -2
 124 triangles(4) = 3
-125 triangles(5) = 4
+125 triangles(5) = 1
 126 triangles(6) = 0
 127 triangles(7) = 0
-128 triangles(8) = 4
+128 triangles(8) = 1
 129 ntriangles = 1
-130 gosub 5998
+130 gosub 5900
 140 end
 
-5998 rem subprotocol to draw all existing objects in the frame
-5999 rem computes occlusion
-6000 for objecti=0 to triangles step 1
+5900 rem subprotocol to draw all existing objects in the frame
+5910 rem does not compute occlusion
+5990 if ntriangles == 0 then gosub 6590
+6000 for objecti=0 to ntriangles-1 step 1
 6010 v1x = triangles(9 * objecti + 0)
 6020 v1y = triangles(9 * objecti + 1)
 6030 v1z = triangles(9 * objecti + 2)
@@ -74,12 +77,12 @@
 6370 shiftv3z = rotv3z + zcamera
 6380 shiftv3y = rotv3y + ycamera
 
-6400 projv1x = shiftv1x / shiftv1z
-6410 projv1y = shiftv1y / shiftv1z
-6420 projv2x = shiftv2x / shiftv2z
-6430 projv2y = shiftv2y / shiftv2z
-6440 projv3x = shiftv3x / shiftv3z
-6450 projv3y = shiftv3y / shiftv3z
+6400 projv1x = shiftv1x / shiftv1z + xscreen/2
+6410 projv1y = shiftv1y / shiftv1z + yscreen/2
+6420 projv2x = shiftv2x / shiftv2z + xscreen/2
+6430 projv2y = shiftv2y / shiftv2z + yscreen/2
+6440 projv3x = shiftv3x / shiftv3z + xscreen/2
+6450 projv3y = shiftv3y / shiftv3z + yscreen/2
 
 6500 hplot projv1x, projv1y to projv2x, projv2y
 6510 hplot projv2x, projv2y to projv3x, projv3y
@@ -87,7 +90,8 @@
 
 6530 next objecti
 
-6600 for objecti=0 to nrectangles step 1
+6590 if nrectangles == 0 then return
+6600 for objecti=0 to nrectangles-1 step 1
 6610 v1x = rectangles(12 * objecti + 0)
 6620 v1y = rectangles(12 * objecti + 1)
 6630 v1z = rectangles(12 * objecti + 2)
@@ -141,14 +145,14 @@
 7170 shiftv4z = rotv4z + zcamera
 7180 shiftv4y = rotv4y + ycamera
 
-7200 projv1x = shiftv1x / shiftv1z
-7210 projv1y = shiftv1y / shiftv1z
-7220 projv2x = shiftv2x / shiftv2z
-7230 projv2y = shiftv2y / shiftv2z
-7240 projv3x = shiftv3x / shiftv3z
-7250 projv3y = shiftv3y / shiftv3z
-7240 projv4x = shiftv4x / shiftv4z
-7250 projv4y = shiftv4y / shiftv4z
+7200 projv1x = shiftv1x / shiftv1z + xscreen/2
+7210 projv1y = shiftv1y / shiftv1z + yscreen/2
+7220 projv2x = shiftv2x / shiftv2z + xscreen/2
+7230 projv2y = shiftv2y / shiftv2z + yscreen/2
+7240 projv3x = shiftv3x / shiftv3z + xscreen/2
+7250 projv3y = shiftv3y / shiftv3z + yscreen/2
+7240 projv4x = shiftv4x / shiftv4z + xscreen/2
+7250 projv4y = shiftv4y / shiftv4z + yscreen/2
 
 7300 hplot projv1x, projv1y to projv2x, projv2y
 7310 hplot projv2x, projv2y to projv3x, projv3y
