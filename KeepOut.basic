@@ -118,9 +118,9 @@
 6440 x3 = x3 * FOV / z3 + xscreen/2
 6450 y3 = y3 * FOV / z3 + yscreen/2
 
-6500 hplot x1, y1 to x2, y2
-6510 hplot x2, y2 to x3, y3
-6520 hplot x3, y3 to x1, y1
+6500 sx = x1: sy = y1: ex = x2: ey = y2: gosub 8000
+6510 sx = x2: sy = y2: ex = x3: ey = y3: gosub 8000
+6520 sx = x1: sy = y1: ex = x3: ey = y3: gosub 8000
 
 6530 next objecti
 6540 return
@@ -189,10 +189,15 @@
 7260 x4 = x4 * FOV / z4 + xscreen/2
 7270 y4 = y4 * FOV / z4 + yscreen/2
 
-7340 hplot x1, y1 to x2, y2
-7440 hplot x2, y2 to x3, y3
-7540 hplot x3, y3 to x4, y4
-7640 hplot x4, y4 to x1, y1
+7340 sx = x1: sy = y1: ex = x2: ey = y2: gosub 8000
+7440 sx = x2: sy = y2: ex = x3: ey = y3: gosub 8000
+7540 sx = x3: sy = y3: ex = x4: ey = y4: gosub 8000
+7640 sx = x1: sy = y1: ex = x4: ey = y4: gosub 8000
 
 7700 next objecti
 7710 return
+
+7998 rem subprotocol to draw a line clipped to screen
+7999 rem takes input as sx, sy, ex, ey (start end x y)
+8000 if sx > 0 and sx < xscreen and ex > 0 and ex < xscreen and sy > 0 and sy < yscreen and ey > 0 and ey < yscreen then hplot sx, sy to ex, ey
+8010 return
