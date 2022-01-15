@@ -17,7 +17,7 @@
 80 ycamera = 0
 90 zcamera = 5
 100 yrot = 0
-110 FOV = 4
+110 FOV = 6
 101 rem choosing to ignore x and z rotation as they are not needed for this
 102 rem rotation of 0 is in the +z direction; angles are 0-2π
 103 rem FOV is linear and represents how many px a meter is
@@ -54,8 +54,9 @@
 
 142 nrectangles = 1
 
-145 for i=0 to 100
-146 yrot = yrot + 0.01
+144 for i=0 to 100
+145 rem PRINT i
+146 yrot = yrot + 0.05
 149 HCOLOR = 3
 150 gosub 5900
 151 HCOLOR = 0
@@ -81,35 +82,31 @@
 6080 y3 = triangles(9 * objecti + 7)
 6090 z3 = triangles(9 * objecti + 8)
 
-6100 dist = sqr(x1*x1 + z1*z1)
-6110 angle = atn(x1/z1)
-6120 if z1 < 0 then angle = angle + PI/2
-6130 x1 = dist * sin(angle - yrot)
-6140 z1 = dist * cos(angle - yrot)
-6150 y1 = y1
-6160 x1 = x1 + xcamera
-6170 z1 = z1 + zcamera
-6180 y1 = y1 + ycamera
+6100 tx = x1
+6110 ty = y1
+6120 tz = z1
+6130 gosub 8100
+6140 x1 = tx
+6150 y1 = ty
+6160 z1 = tz
 
-6200 dist = sqr(x2*x2 + z2*z2)
-6210 angle = atn(x2/z2)
-6220 if z2 < 0 then angle = angle + PI/2
-6230 x2 = dist * sin(angle - yrot)
-6240 z2 = dist * cos(angle - yrot)
-6250 y2 = y2
-6260 x2 = x2 + xcamera
-6270 z2 = z2 + zcamera
-6280 y2 = y2 + ycamera
+6200 tx = x2
+6210 ty = y2
+6220 tz = z2
+6230 gosub 8100
+6240 x2 = tx
+6250 y2 = ty
+6260 z2 = tz
 
-6300 dist = sqr(x3*x3 + z3*z3)
-6310 angle = atn(x3/z3)
-6320 if z3 < 0 then angle = angle + PI/2
-6330 x3 = dist * sin(angle - yrot)
-6340 z3 = dist * cos(angle - yrot)
-6350 y3 = y3
-6360 x3 = x3 + xcamera
-6370 z3 = z3 + zcamera
-6380 y3 = y3 + ycamera
+6300 t3 = x1
+6310 t3 = y1
+6320 t3 = z1
+6330 gosub 8100
+6340 x3 = tx
+6350 y3 = ty
+6360 z3 = tz
+
+6390 rem PRINT x1;" ";y1;" ";z1;" ";x2;" ";y2;" ";z2;" ";x3;" ";y3;" ";z3
 
 6400 x1 = x1 * FOV / z1 + xscreen/2
 6410 y1 = y1 * FOV / z1 + yscreen/2
@@ -140,45 +137,37 @@
 6710 y4 = rectangles(12 * objecti + 10)
 6720 z4 = rectangles(12 * objecti + 11)
 
-6800 dist = sqr(x1*x1 + z1*z1)
-6810 angle = atn(x1/z1)
-6820 if z1 < 0 then angle = angle + PI/2
-6830 x1 = dist * sin(angle - yrot)
-6840 z1 = dist * cos(angle - yrot)
-6850 y1 = y1
-6860 x1 = x1 + xcamera
-6870 z1 = z1 + zcamera
-6880 y1 = y1 + ycamera
+6800 tx = x1
+6810 ty = y1
+6820 tz = z1
+6830 gosub 8100
+6840 x1 = tx
+6850 y1 = ty
+6860 z1 = tz
 
-6900 dist = sqr(x2*x2 + z2*z2)
-6910 angle = atn(x2/z2)
-6920 if z2 < 0 then angle = angle + PI/2
-6930 x2 = dist * sin(angle - yrot)
-6940 z2 = dist * cos(angle - yrot)
-6950 y2 = y2
-6960 x2 = x2 + xcamera
-6970 z2 = z2 + zcamera
-6980 y2 = y2 + ycamera
+6900 tx = x2
+6910 ty = y2
+6920 tz = z2
+6930 gosub 8100
+6940 x2 = tx
+6950 y2 = ty
+6960 z2 = tz
 
-7000 dist = sqr(x3*x3 + z3*z3)
-7010 angle = atn(x3/z3)
-7020 if z3 < 0 then angle = angle + PI/2
-7030 x3 = dist * sin(angle - yrot)
-7040 z3 = dist * cos(angle - yrot)
-7050 y3 = y3
-7060 x3 = x3 + xcamera
-7070 z3 = z3 + zcamera
-7080 y3 = y3 + ycamera
+7000 tx = x3
+7010 ty = y3
+7020 tz = z3
+7030 gosub 8100
+7040 x3 = tx
+7050 y3 = ty
+7060 z3 = tz
 
-7100 dist = sqr(x4*x4 + z4*z4)
-7110 angle = atn(x4/z4)
-7120 if z4 < 0 then angle = angle + PI/2
-7130 x4 = dist * sin(angle - yrot)
-7140 z4 = dist * cos(angle - yrot)
-7150 y4 = y4
-7160 x4 = x4 + xcamera
-7170 z4 = z4 + zcamera
-7180 y4 = y4 + ycamera
+7100 tx = x4
+7110 ty = y4
+7120 tz = z4
+7130 gosub 8100
+7140 x4 = tx
+7150 y4 = ty
+7160 z4 = tz
 
 7200 x1 = x1 * FOV / z1 + xscreen/2
 7210 y1 = y1 * FOV / z1 + yscreen/2
@@ -201,3 +190,14 @@
 7999 rem takes input as sx, sy, ex, ey (start end x y)
 8000 if sx > 0 and sx < xscreen and ex > 0 and ex < xscreen and sy > 0 and sy < yscreen and ey > 0 and ey < yscreen then hplot sx, sy to ex, ey
 8010 return
+
+8098 rem subprotocol to transform x,y,z coordinates into camera space for drawing
+8099 rem takes input as tx, ty, tz (transform x y z)
+8100 tx = tx + xcamera
+8110 tz = tz + zcamera
+8120 ty = ty + ycamera
+8130 ox = tx
+8140 oz = tz
+8150 tx = ox * cos(yrot) - oz * sin(yrot)
+8160 tz = ox * sin(yrot) + oz * cos(yrot)
+8170 return
