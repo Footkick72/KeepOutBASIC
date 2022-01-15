@@ -1,74 +1,160 @@
-10 hgr
-20 HCOLOR = 3
+1 hgr
+2 HCOLOR = 3
+3 PI = 3.141592653
 
-30 dim frameTriangles(12*20)
-40 frameTriangleObjects = 0
-50 dim frameRectangles(16*20)
-60 frameRectangleObjects = 0
-61 rem to draw a triangle, add the relevant points to frameTriangles -
-62 rem x1,y1,z1,x2,y2,z2,x3,y3,z3 - and increment frameTriangleObjects
+30 dim triangles(12*20)
+40 ntriangles = 0
+50 dim rectangles(16*20)
+60 nrectangles = 0
+61 rem to draw a triangle, add the relevant points to triangles -
+62 rem x1,y1,z1,x2,y2,z2,x3,y3,z3 - and increment ntriangles
 63 rem drawing a rectangle is the analagous with appropriate variables
 64 rem the arrays have space for 20 at once
 
-70 cameraX = 0
-80 cameraY = 0
-90 cameraZ = 0
-100 cameraYrot = 0
+70 xcamera = 0
+80 ycamera = 0
+90 zcamera = 0
+100 yrot = 0
 101 rem choosing to ignore x and z rotation as they are not needed for this
 102 rem rotation of 0 is in the +x direction; angles are 0-2π
 
+120 triangles(0) = 2
+121 triangles(1) = 3
+122 triangles(2) = 4
+123 triangles(3) = -2
+124 triangles(4) = 3
+125 triangles(5) = 4
+126 triangles(6) = 0
+127 triangles(7) = 0
+128 triangles(8) = 4
+129 ntriangles = 1
+130 gosub 5998
+140 end
+
 5998 rem subprotocol to draw all existing objects in the frame
 5999 rem computes occlusion
-6000 for objecti=0 to frameTriangleObjects
-6010 v1x = frameTriangleObjects(9 * objecti + 0)
-6020 v1y = frameTriangleObjects(9 * objecti + 1)
-6030 v1z = frameTriangleObjects(9 * objecti + 2)
-6040 v2x = frameTriangleObjects(9 * objecti + 3)
-6050 v2y = frameTriangleObjects(9 * objecti + 4)
-6060 v2z = frameTriangleObjects(9 * objecti + 5)
-6070 v3x = frameTriangleObjects(9 * objecti + 6)
-6080 v3y = frameTriangleObjects(9 * objecti + 7)
-6090 v3z = frameTriangleObjects(9 * objecti + 8)
+6000 for objecti=0 to triangles step 1
+6010 v1x = triangles(9 * objecti + 0)
+6020 v1y = triangles(9 * objecti + 1)
+6030 v1z = triangles(9 * objecti + 2)
+6040 v2x = triangles(9 * objecti + 3)
+6050 v2y = triangles(9 * objecti + 4)
+6060 v2z = triangles(9 * objecti + 5)
+6070 v3x = triangles(9 * objecti + 6)
+6080 v3y = triangles(9 * objecti + 7)
+6090 v3z = triangles(9 * objecti + 8)
 
-6000 v1dist = sqr(v1x*v1x + v1z*v1z)
-6010 v1angle = atn(v1x/v1z)
-6020 if v1z < 0 then v1angle += PI/2
-6030 rotv1x = v1dist * cos(v1angle - cameraYrot)
-6040 rotv1z = v1dist * sin(v1angle - cameraYrot)
-6050 rotv1y = v1y
-6060 shiftv1x = rotv1x + cameraX
-6070 shiftv1z = rotv1z + cameraZ
-6080 shiftv1y = rotv1y + cameraY
+6100 v1dist = sqr(v1x*v1x + v1z*v1z)
+6110 v1angle = atn(v1x/v1z)
+6120 if v1z < 0 then v1angle = v1angle + PI/2
+6130 rotv1x = v1dist * cos(v1angle - yrot)
+6140 rotv1z = v1dist * sin(v1angle - yrot)
+6150 rotv1y = v1y
+6160 shiftv1x = rotv1x + xcamera
+6170 shiftv1z = rotv1z + zcamera
+6180 shiftv1y = rotv1y + ycamera
 
-6100 v2dist = sqr(v2x*v2x + v2z*v2z)
-6110 v2angle = atn(v2x/v2z)
-6120 if v2z < 0 then v2angle += PI/2
-6130 rotv2x = v2dist * cos(v2angle - cameraYrot)
-6140 rotv2z = v2dist * sin(v2angle - cameraYrot)
-6150 rotv2y = v2y
-6160 shiftv2x = rotv2x + cameraX
-6170 shiftv2z = rotv2z + cameraZ
-6180 shiftv2y = rotv2y + cameraY
+6200 v2dist = sqr(v2x*v2x + v2z*v2z)
+6210 v2angle = atn(v2x/v2z)
+6220 if v2z < 0 then v2angle = v2angle + PI/2
+6230 rotv2x = v2dist * cos(v2angle - yrot)
+6240 rotv2z = v2dist * sin(v2angle - yrot)
+6250 rotv2y = v2y
+6260 shiftv2x = rotv2x + xcamera
+6270 shiftv2z = rotv2z + zcamera
+6280 shiftv2y = rotv2y + ycamera
 
-6200 v3dist = sqr(v3x*v3x + v3z*v3z)
-6210 v3angle = atn(v3x/v3z)
-6220 if v3z < 0 then v3angle += PI/3
-6230 rotv3x = v3dist * cos(v3angle - cameraYrot)
-6240 rotv3z = v3dist * sin(v3angle - cameraYrot)
-6250 rotv3y = v3y
-6260 shiftv3x = rotv3x + cameraX
-6270 shiftv3z = rotv3z + cameraZ
-6280 shiftv3y = rotv3y + cameraY
+6300 v3dist = sqr(v3x*v3x + v3z*v3z)
+6310 v3angle = atn(v3x/v3z)
+6320 if v3z < 0 then v3angle = v3angle + PI/2
+6330 rotv3x = v3dist * cos(v3angle - yrot)
+6340 rotv3z = v3dist * sin(v3angle - yrot)
+6350 rotv3y = v3y
+6360 shiftv3x = rotv3x + xcamera
+6370 shiftv3z = rotv3z + zcamera
+6380 shiftv3y = rotv3y + ycamera
 
-6300 projv1x = shiftv1x / shiftv1z
-6310 projv1y = shiftv1y / shiftv1z
-6320 projv2x = shiftv2x / shiftv2z
-6330 projv2y = shiftv2y / shiftv2z
-6340 projv3x = shiftv3x / shiftv3z
-6350 projv3y = shiftv3y / shiftv3z
+6400 projv1x = shiftv1x / shiftv1z
+6410 projv1y = shiftv1y / shiftv1z
+6420 projv2x = shiftv2x / shiftv2z
+6430 projv2y = shiftv2y / shiftv2z
+6440 projv3x = shiftv3x / shiftv3z
+6450 projv3y = shiftv3y / shiftv3z
 
-6400 hplot projv1x, projv1y, projv2x, projv2y
-6410 hplot projv2x, projv2y, projv3x, projv3y
-6420 hplot projv1x, projv1y, projv3x, projv3y
+6500 hplot projv1x, projv1y to projv2x, projv2y
+6510 hplot projv2x, projv2y to projv3x, projv3y
+6520 hplot projv1x, projv1y to projv3x, projv3y
 
-6500 return
+6530 next objecti
+
+6600 for objecti=0 to nrectangles step 1
+6610 v1x = rectangles(12 * objecti + 0)
+6620 v1y = rectangles(12 * objecti + 1)
+6630 v1z = rectangles(12 * objecti + 2)
+6640 v2x = rectangles(12 * objecti + 3)
+6650 v2y = rectangles(12 * objecti + 4)
+6660 v2z = rectangles(12 * objecti + 5)
+6670 v3x = rectangles(12 * objecti + 6)
+6680 v3y = rectangles(12 * objecti + 7)
+6690 v3z = rectangles(12 * objecti + 8)
+6700 v4x = rectangles(12 * objecti + 9)
+6710 v4y = rectangles(12 * objecti + 10)
+6720 v4z = rectangles(12 * objecti + 11)
+
+6800 v1dist = sqr(v1x*v1x + v1z*v1z)
+6810 v1angle = atn(v1x/v1z)
+6820 if v1z < 0 then v1angle = v1angle + PI/2
+6830 rotv1x = v1dist * cos(v1angle - yrot)
+6840 rotv1z = v1dist * sin(v1angle - yrot)
+6850 rotv1y = v1y
+6860 shiftv1x = rotv1x + xcamera
+6870 shiftv1z = rotv1z + zcamera
+6880 shiftv1y = rotv1y + ycamera
+
+6900 v2dist = sqr(v2x*v2x + v2z*v2z)
+6910 v2angle = atn(v2x/v2z)
+6920 if v2z < 0 then v2angle = v2angle + PI/2
+6930 rotv2x = v2dist * cos(v2angle - yrot)
+6940 rotv2z = v2dist * sin(v2angle - yrot)
+6950 rotv2y = v2y
+6960 shiftv2x = rotv2x + xcamera
+6970 shiftv2z = rotv2z + zcamera
+6980 shiftv2y = rotv2y + ycamera
+
+7000 v3dist = sqr(v3x*v3x + v3z*v3z)
+7010 v3angle = atn(v3x/v3z)
+7020 if v3z < 0 then v3angle = v3angle + PI/2
+7030 rotv3x = v3dist * cos(v3angle - yrot)
+7040 rotv3z = v3dist * sin(v3angle - yrot)
+7050 rotv3y = v3y
+7060 shiftv3x = rotv3x + xcamera
+7070 shiftv3z = rotv3z + zcamera
+7080 shiftv3y = rotv3y + ycamera
+
+7100 v4dist = sqr(v4x*v4x + v4z*v4z)
+7110 v4angle = atn(v4x/v4z)
+7120 if v4z < 0 then v4angle = v4angle + PI/2
+7130 rotv4x = v4dist * cos(v4angle - yrot)
+7140 rotv4z = v4dist * sin(v4angle - yrot)
+7150 rotv4y = v4y
+7160 shiftv4x = rotv4x + xcamera
+7170 shiftv4z = rotv4z + zcamera
+7180 shiftv4y = rotv4y + ycamera
+
+7200 projv1x = shiftv1x / shiftv1z
+7210 projv1y = shiftv1y / shiftv1z
+7220 projv2x = shiftv2x / shiftv2z
+7230 projv2y = shiftv2y / shiftv2z
+7240 projv3x = shiftv3x / shiftv3z
+7250 projv3y = shiftv3y / shiftv3z
+7240 projv4x = shiftv4x / shiftv4z
+7250 projv4y = shiftv4y / shiftv4z
+
+7300 hplot projv1x, projv1y to projv2x, projv2y
+7310 hplot projv2x, projv2y to projv3x, projv3y
+7320 hplot projv3x, projv3y to projv4x, projv4y
+7330 hplot projv4x, projv4y to projv1x, projv1y
+
+7340 next objecti
+
+7350 return
