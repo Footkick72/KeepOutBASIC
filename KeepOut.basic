@@ -18,17 +18,20 @@
 90 zcamera = 0
 100 yrot = 0
 101 rem choosing to ignore x and z rotation as they are not needed for this
-102 rem rotation of 0 is in the +x direction; angles are 0-2π
+102 rem rotation of 0 is in the +z direction; angles are 0-2π
 
-120 triangles(0) = 2
-121 triangles(1) = 3
+120 triangles(0) = 0
+121 triangles(1) = 0
 122 triangles(2) = 1
-123 triangles(3) = -2
-124 triangles(4) = 3
+
+123 triangles(3) = 10
+124 triangles(4) = 0
 125 triangles(5) = 1
+
 126 triangles(6) = 0
-127 triangles(7) = 0
+127 triangles(7) = 10
 128 triangles(8) = 1
+
 129 ntriangles = 1
 130 gosub 5900
 140 end
@@ -37,127 +40,127 @@
 5910 rem does not compute occlusion
 5990 if ntriangles == 0 then gosub 6590
 6000 for objecti=0 to ntriangles-1 step 1
-6010 v1x = triangles(9 * objecti + 0)
-6020 v1y = triangles(9 * objecti + 1)
-6030 v1z = triangles(9 * objecti + 2)
-6040 v2x = triangles(9 * objecti + 3)
-6050 v2y = triangles(9 * objecti + 4)
-6060 v2z = triangles(9 * objecti + 5)
-6070 v3x = triangles(9 * objecti + 6)
-6080 v3y = triangles(9 * objecti + 7)
-6090 v3z = triangles(9 * objecti + 8)
+6010 x1 = triangles(9 * objecti + 0)
+6020 y1 = triangles(9 * objecti + 1)
+6030 z1 = triangles(9 * objecti + 2)
+6040 x2 = triangles(9 * objecti + 3)
+6050 y2 = triangles(9 * objecti + 4)
+6060 z2 = triangles(9 * objecti + 5)
+6070 x3 = triangles(9 * objecti + 6)
+6080 y3 = triangles(9 * objecti + 7)
+6090 z3 = triangles(9 * objecti + 8)
 
-6100 v1dist = sqr(v1x*v1x + v1z*v1z)
-6110 v1angle = atn(v1x/v1z)
-6120 if v1z < 0 then v1angle = v1angle + PI/2
-6130 rotv1x = v1dist * cos(v1angle - yrot)
-6140 rotv1z = v1dist * sin(v1angle - yrot)
-6150 rotv1y = v1y
-6160 shiftv1x = rotv1x + xcamera
-6170 shiftv1z = rotv1z + zcamera
-6180 shiftv1y = rotv1y + ycamera
+6100 dist = sqr(x1*x1 + z1*z1)
+6110 angle = atn(x1/z1)
+6120 if z1 < 0 then angle = angle + PI/2
+6130 x1 = dist * sin(angle - yrot)
+6140 z1 = dist * cos(angle - yrot)
+6150 y1 = y1
+6160 x1 = x1 + xcamera
+6170 z1 = z1 + zcamera
+6180 y1 = y1 + ycamera
 
-6200 v2dist = sqr(v2x*v2x + v2z*v2z)
-6210 v2angle = atn(v2x/v2z)
-6220 if v2z < 0 then v2angle = v2angle + PI/2
-6230 rotv2x = v2dist * cos(v2angle - yrot)
-6240 rotv2z = v2dist * sin(v2angle - yrot)
-6250 rotv2y = v2y
-6260 shiftv2x = rotv2x + xcamera
-6270 shiftv2z = rotv2z + zcamera
-6280 shiftv2y = rotv2y + ycamera
+6200 dist = sqr(x2*x2 + z2*z2)
+6210 dist = atn(x2/z2)
+6220 if z2 < 0 then dist = dist + PI/2
+6230 x2 = dist * sin(dist - yrot)
+6240 z2 = dist * cos(dist - yrot)
+6250 y2 = y2
+6260 x2 = x2 + xcamera
+6270 z2 = z2 + zcamera
+6280 y2 = y2 + ycamera
 
-6300 v3dist = sqr(v3x*v3x + v3z*v3z)
-6310 v3angle = atn(v3x/v3z)
-6320 if v3z < 0 then v3angle = v3angle + PI/2
-6330 rotv3x = v3dist * cos(v3angle - yrot)
-6340 rotv3z = v3dist * sin(v3angle - yrot)
-6350 rotv3y = v3y
-6360 shiftv3x = rotv3x + xcamera
-6370 shiftv3z = rotv3z + zcamera
-6380 shiftv3y = rotv3y + ycamera
+6300 dist = sqr(x3*x3 + z3*z3)
+6310 angle = atn(x3/z3)
+6320 if z3 < 0 then angle = angle + PI/2
+6330 x3 = dist * sin(angle - yrot)
+6340 z3 = dist * cos(angle - yrot)
+6350 y3 = y3
+6360 x3 = x3 + xcamera
+6370 z3 = z3 + zcamera
+6380 y3 = y3 + ycamera
 
-6400 projv1x = shiftv1x / shiftv1z + xscreen/2
-6410 projv1y = shiftv1y / shiftv1z + yscreen/2
-6420 projv2x = shiftv2x / shiftv2z + xscreen/2
-6430 projv2y = shiftv2y / shiftv2z + yscreen/2
-6440 projv3x = shiftv3x / shiftv3z + xscreen/2
-6450 projv3y = shiftv3y / shiftv3z + yscreen/2
+6400 x1 = x1 / z1 + xscreen/2
+6410 y1 = y1 / z1 + yscreen/2
+6420 x2 = x2 / z2 + xscreen/2
+6430 y2 = y2 / z2 + yscreen/2
+6440 x3 = x3 / z3 + xscreen/2
+6450 y3 = y3 / z3 + yscreen/2
 
-6500 hplot projv1x, projv1y to projv2x, projv2y
-6510 hplot projv2x, projv2y to projv3x, projv3y
-6520 hplot projv1x, projv1y to projv3x, projv3y
+6500 hplot x1, y1 to x2, y2
+6510 hplot x2, y2 to x3, y3
+6520 hplot x3, y3 to x1, y1
 
 6530 next objecti
 
 6590 if nrectangles == 0 then return
 6600 for objecti=0 to nrectangles-1 step 1
-6610 v1x = rectangles(12 * objecti + 0)
-6620 v1y = rectangles(12 * objecti + 1)
-6630 v1z = rectangles(12 * objecti + 2)
-6640 v2x = rectangles(12 * objecti + 3)
-6650 v2y = rectangles(12 * objecti + 4)
-6660 v2z = rectangles(12 * objecti + 5)
-6670 v3x = rectangles(12 * objecti + 6)
-6680 v3y = rectangles(12 * objecti + 7)
-6690 v3z = rectangles(12 * objecti + 8)
-6700 v4x = rectangles(12 * objecti + 9)
-6710 v4y = rectangles(12 * objecti + 10)
-6720 v4z = rectangles(12 * objecti + 11)
+6610 x1 = rectangles(12 * objecti + 0)
+6620 y1 = rectangles(12 * objecti + 1)
+6630 z1 = rectangles(12 * objecti + 2)
+6640 x2 = rectangles(12 * objecti + 3)
+6650 y2 = rectangles(12 * objecti + 4)
+6660 z2 = rectangles(12 * objecti + 5)
+6670 x3 = rectangles(12 * objecti + 6)
+6680 y3 = rectangles(12 * objecti + 7)
+6690 z3 = rectangles(12 * objecti + 8)
+6700 x4 = rectangles(12 * objecti + 9)
+6710 y4 = rectangles(12 * objecti + 10)
+6720 z4 = rectangles(12 * objecti + 11)
 
-6800 v1dist = sqr(v1x*v1x + v1z*v1z)
-6810 v1angle = atn(v1x/v1z)
-6820 if v1z < 0 then v1angle = v1angle + PI/2
-6830 rotv1x = v1dist * cos(v1angle - yrot)
-6840 rotv1z = v1dist * sin(v1angle - yrot)
-6850 rotv1y = v1y
-6860 shiftv1x = rotv1x + xcamera
-6870 shiftv1z = rotv1z + zcamera
-6880 shiftv1y = rotv1y + ycamera
+6800 dist = sqr(x1*x1 + z1*z1)
+6810 angle = atn(x1/z1)
+6820 if z1 < 0 then angle = angle + PI/2
+6830 x1 = dist * cos(angle - yrot)
+6840 z1 = dist * sin(angle - yrot)
+6850 y1 = y1
+6860 x1 = x1 + xcamera
+6870 z1 = z1 + zcamera
+6880 y1 = y1 + ycamera
 
-6900 v2dist = sqr(v2x*v2x + v2z*v2z)
-6910 v2angle = atn(v2x/v2z)
-6920 if v2z < 0 then v2angle = v2angle + PI/2
-6930 rotv2x = v2dist * cos(v2angle - yrot)
-6940 rotv2z = v2dist * sin(v2angle - yrot)
-6950 rotv2y = v2y
-6960 shiftv2x = rotv2x + xcamera
-6970 shiftv2z = rotv2z + zcamera
-6980 shiftv2y = rotv2y + ycamera
+6900 dist = sqr(x2*x2 + z2*z2)
+6910 dist = atn(x2/z2)
+6920 if z2 < 0 then dist = dist + PI/2
+6930 x2 = dist * cos(dist - yrot)
+6940 z2 = dist * sin(dist - yrot)
+6950 y2 = y2
+6960 x2 = x2 + xcamera
+6970 z2 = z2 + zcamera
+6980 y2 = y2 + ycamera
 
-7000 v3dist = sqr(v3x*v3x + v3z*v3z)
-7010 v3angle = atn(v3x/v3z)
-7020 if v3z < 0 then v3angle = v3angle + PI/2
-7030 rotv3x = v3dist * cos(v3angle - yrot)
-7040 rotv3z = v3dist * sin(v3angle - yrot)
-7050 rotv3y = v3y
-7060 shiftv3x = rotv3x + xcamera
-7070 shiftv3z = rotv3z + zcamera
-7080 shiftv3y = rotv3y + ycamera
+7000 dist = sqr(x3*x3 + z3*z3)
+7010 angle = atn(x3/z3)
+7020 if z3 < 0 then angle = angle + PI/2
+7030 x3 = dist * sin(angle - yrot)
+7040 z3 = dist * cos(angle - yrot)
+7050 y3 = y3
+7060 x3 = x3 + xcamera
+7070 z3 = z3 + zcamera
+7080 y3 = y3 + ycamera
 
-7100 v4dist = sqr(v4x*v4x + v4z*v4z)
-7110 v4angle = atn(v4x/v4z)
-7120 if v4z < 0 then v4angle = v4angle + PI/2
-7130 rotv4x = v4dist * cos(v4angle - yrot)
-7140 rotv4z = v4dist * sin(v4angle - yrot)
-7150 rotv4y = v4y
-7160 shiftv4x = rotv4x + xcamera
-7170 shiftv4z = rotv4z + zcamera
-7180 shiftv4y = rotv4y + ycamera
+7100 dist = sqr(x4*x4 + z4*z4)
+7110 angle = atn(x4/z4)
+7120 if z4 < 0 then angle = angle + PI/2
+7130 x4 = dist * sin(angle - yrot)
+7140 z4 = dist * cos(angle - yrot)
+7150 y4 = y4
+7160 x4 = x4 + xcamera
+7170 z4 = z4 + zcamera
+7180 y4 = y4 + ycamera
 
-7200 projv1x = shiftv1x / shiftv1z + xscreen/2
-7210 projv1y = shiftv1y / shiftv1z + yscreen/2
-7220 projv2x = shiftv2x / shiftv2z + xscreen/2
-7230 projv2y = shiftv2y / shiftv2z + yscreen/2
-7240 projv3x = shiftv3x / shiftv3z + xscreen/2
-7250 projv3y = shiftv3y / shiftv3z + yscreen/2
-7240 projv4x = shiftv4x / shiftv4z + xscreen/2
-7250 projv4y = shiftv4y / shiftv4z + yscreen/2
+7200 x1 = x1 / z1 + xscreen/2
+7210 y1 = y1 / z1 + yscreen/2
+7220 x2 = x2 / z2 + xscreen/2
+7230 y2 = y2 / z2 + yscreen/2
+7240 x3 = x3 / z3 + xscreen/2
+7250 y3 = y3 / z3 + yscreen/2
+7240 x4 = x4 / z4 + xscreen/2
+7250 y4 = y4 / z4 + yscreen/2
 
-7300 hplot projv1x, projv1y to projv2x, projv2y
-7310 hplot projv2x, projv2y to projv3x, projv3y
-7320 hplot projv3x, projv3y to projv4x, projv4y
-7330 hplot projv4x, projv4y to projv1x, projv1y
+7300 hplot x1, y1 to x2, y2
+7310 hplot x2, y2 to x3, y3
+7320 hplot x3, y3 to x4, y4
+7330 hplot x4, y4 to x1, y1
 
 7340 next objecti
 
