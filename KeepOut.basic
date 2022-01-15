@@ -15,10 +15,12 @@
 
 70 xcamera = 0
 80 ycamera = 0
-90 zcamera = 0
+90 zcamera = 5
 100 yrot = 0
+110 FOV = 4
 101 rem choosing to ignore x and z rotation as they are not needed for this
 102 rem rotation of 0 is in the +z direction; angles are 0-2π
+103 rem FOV is linear and represents how many px a meter is
 
 120 triangles(0) = 0
 121 triangles(1) = 0
@@ -34,25 +36,31 @@
 
 129 ntriangles = 1
 
-130 rectangles(0) = 0
-131 rectangles(1) = 0
+130 rectangles(0) = -5
+131 rectangles(1) = 5
 132 rectangles(2) = 1
 
-133 rectangles(3) = 10
-134 rectangles(4) = 0
+133 rectangles(3) = -10
+134 rectangles(4) = 5
 135 rectangles(5) = 1
 
-136 rectangles(6) = 0
-137 rectangles(7) = 0
+136 rectangles(6) = -10
+137 rectangles(7) = -10
 138 rectangles(8) = 1
 
-139 rectangles(9) = 0
-140 rectangles(10) = 0
+139 rectangles(9) = -5
+140 rectangles(10) = -15
 141 rectangles(11) = 1
 
 142 nrectangles = 1
 
+145 for i=0 to 100
+146 yrot = yrot + 0.01
+149 HCOLOR = 3
 150 gosub 5900
+151 HCOLOR = 0
+152 gosub 5900
+153 next i
 160 end
 
 5900 rem subprotocol to draw all existing objects in the frame
@@ -103,12 +111,12 @@
 6370 z3 = z3 + zcamera
 6380 y3 = y3 + ycamera
 
-6400 x1 = x1 / z1 + xscreen/2
-6410 y1 = y1 / z1 + yscreen/2
-6420 x2 = x2 / z2 + xscreen/2
-6430 y2 = y2 / z2 + yscreen/2
-6440 x3 = x3 / z3 + xscreen/2
-6450 y3 = y3 / z3 + yscreen/2
+6400 x1 = x1 * FOV / z1 + xscreen/2
+6410 y1 = y1 * FOV / z1 + yscreen/2
+6420 x2 = x2 * FOV / z2 + xscreen/2
+6430 y2 = y2 * FOV / z2 + yscreen/2
+6440 x3 = x3 * FOV / z3 + xscreen/2
+6450 y3 = y3 * FOV / z3 + yscreen/2
 
 6500 hplot x1, y1 to x2, y2
 6510 hplot x2, y2 to x3, y3
@@ -172,14 +180,14 @@
 7170 z4 = z4 + zcamera
 7180 y4 = y4 + ycamera
 
-7200 x1 = x1 / z1 + xscreen/2
-7210 y1 = y1 / z1 + yscreen/2
-7220 x2 = x2 / z2 + xscreen/2
-7230 y2 = y2 / z2 + yscreen/2
-7240 x3 = x3 / z3 + xscreen/2
-7250 y3 = y3 / z3 + yscreen/2
-7260 x4 = x4 / z4 + xscreen/2
-7270 y4 = y4 / z4 + yscreen/2
+7200 x1 = x1 * FOV / z1 + xscreen/2
+7210 y1 = y1 * FOV / z1 + yscreen/2
+7220 x2 = x2 * FOV / z2 + xscreen/2
+7230 y2 = y2 * FOV / z2 + yscreen/2
+7240 x3 = x3 * FOV / z3 + xscreen/2
+7250 y3 = y3 * FOV / z3 + yscreen/2
+7260 x4 = x4 * FOV / z4 + xscreen/2
+7270 y4 = y4 * FOV / z4 + yscreen/2
 
 7300 hplot x1, y1 to x2, y2
 7310 hplot x2, y2 to x3, y3
