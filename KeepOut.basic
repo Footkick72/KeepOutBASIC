@@ -17,7 +17,7 @@
 80 ycamera = 0
 90 zcamera = 5
 100 yrot = 0
-110 FOV = 6
+110 FOV = 120
 101 rem choosing to ignore x and z rotation as they are not needed for this
 102 rem rotation of 0 is in the +z direction; angles are 0-2π
 103 rem FOV is linear and represents how many px a meter is
@@ -34,29 +34,29 @@
 127 triangles(7) = 10
 128 triangles(8) = 1
 
-129 ntriangles = 1
+129 ntriangles = 0
 
-130 rectangles(0) = -5
-131 rectangles(1) = 5
+130 rectangles(0) = -1
+131 rectangles(1) = -1
 132 rectangles(2) = 1
 
-133 rectangles(3) = -10
-134 rectangles(4) = 5
+133 rectangles(3) = -1
+134 rectangles(4) = 1
 135 rectangles(5) = 1
 
-136 rectangles(6) = -10
-137 rectangles(7) = -10
+136 rectangles(6) = 1
+137 rectangles(7) = 1
 138 rectangles(8) = 1
 
-139 rectangles(9) = -5
-140 rectangles(10) = -15
+139 rectangles(9) = 1
+140 rectangles(10) = -1
 141 rectangles(11) = 1
 
 142 nrectangles = 1
 
-144 for i=0 to 100
+144 for i=0 to 200
 145 rem PRINT i
-146 yrot = yrot + 0.05
+146 yrot = yrot + 0.1
 149 HCOLOR = 3
 150 gosub 5900
 151 HCOLOR = 0
