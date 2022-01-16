@@ -18,7 +18,7 @@
 
 70 xcamera = 0
 80 ycamera = -csize/2
-90 zcamera = 0
+90 zcamera = 2
 100 yrot = 0
 110 FOV = 120
 111 rem choosing to ignore x and z rotation as they are not needed for this
@@ -28,9 +28,12 @@
 114 dim c1(2), c2(2)
 115 rem used for cell wall drawing
 
-120 dim map(30*30*2)
-121 rem represents the map; 0 = wall, 1 = clear, 2 = enemy, 3 = gold
-130 difficulty = 0.5
+120 dim map(30*30)
+121 for i=0 to 30*30-1
+122 map(i)=0
+123 rem represents the map; 0 = wall, 1 = clear, 2 = enemy, 3 = gold
+
+130 difficulty = 0.7
 140 gosub 4000
 
 200 rem GAME LOOP
@@ -55,10 +58,10 @@
 
 3030 if map(x*30+y) == 0 then goto 3080
 
-3040 if map((x+1)*30+y) >< 0 then c1(0)=x: c1(1)=y: c2(0)=x+1: c2(1)=y: gosub 3500
-3050 if map((x-1)*30+y) >< 0 then c1(0)=x: c1(1)=y: c2(0)=x-1: c2(1)=y: gosub 3500
-3060 if map(x*30+(y+1)) >< 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y+1: gosub 3500
-3070 if map(x*30+(y-1)) >< 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y-1: gosub 3500
+3040 if map((x+1)*30+y) == 0 then c1(0)=x: c1(1)=y: c2(0)=x+1: c2(1)=y: gosub 3500
+3050 if map((x-1)*30+y) == 0 then c1(0)=x: c1(1)=y: c2(0)=x-1: c2(1)=y: gosub 3500
+3060 if map(x*30+(y+1)) == 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y+1: gosub 3500
+3070 if map(x*30+(y-1)) == 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y-1: gosub 3500
 
 3080 next y
 3090 next x
@@ -68,39 +71,39 @@
 3510 rem of 2 cells - c1 and c2, xy pairs
 3520 xmid = (c1(0) + c2(0))/2
 3530 zmid = (c1(1) + c2(1))/2
-3540 if c1(0) == c2(0) then goto 3750
+3540 if c1(1) == c2(1) then goto 3750
 
 3550 rectangles(12*nrectangles+0) = xmid*csize + csize/2
 3560 rectangles(12*nrectangles+1) = csize
-3570 rectangles(12*nrectangles+2) = zmid
+3570 rectangles(12*nrectangles+2) = zmid*csize
 
 3580 rectangles(12*nrectangles+3) = xmid*csize - csize/2
 3590 rectangles(12*nrectangles+4) = csize
-3600 rectangles(12*nrectangles+5) = zmid
+3600 rectangles(12*nrectangles+5) = zmid*csize
 
 3610 rectangles(12*nrectangles+6) = xmid*csize - csize/2
 3620 rectangles(12*nrectangles+7) = 0
-3630 rectangles(12*nrectangles+8) = zmid
+3630 rectangles(12*nrectangles+8) = zmid*csize
 
 3640 rectangles(12*nrectangles+9) = xmid*csize + csize/2
 3650 rectangles(12*nrectangles+10) = 0
-3660 rectangles(12*nrectangles+11) = zmid
+3660 rectangles(12*nrectangles+11) = zmid*csize
 
 3700 goto 3900
 
-3750 rectangles(12*nrectangles+0) = xmid
+3750 rectangles(12*nrectangles+0) = xmid*csize
 3760 rectangles(12*nrectangles+1) = csize
 3770 rectangles(12*nrectangles+2) = zmid*csize + csize/2
 
-3780 rectangles(12*nrectangles+3) = xmid
+3780 rectangles(12*nrectangles+3) = xmid*csize
 3790 rectangles(12*nrectangles+4) = csize
 3800 rectangles(12*nrectangles+5) = zmid*csize - csize/2
 
-3810 rectangles(12*nrectangles+6) = xmid
+3810 rectangles(12*nrectangles+6) = xmid*csize
 3820 rectangles(12*nrectangles+7) = 0
 3830 rectangles(12*nrectangles+8) = zmid*csize - csize/2
 
-3840 rectangles(12*nrectangles+9) = xmid
+3840 rectangles(12*nrectangles+9) = xmid*csize
 3850 rectangles(12*nrectangles+10) = 0
 3860 rectangles(12*nrectangles+11) = zmid*csize + csize/2
 
