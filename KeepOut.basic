@@ -3,6 +3,7 @@
 3 PI = 3.141592653
 4 xscreen = 280
 5 yscreen = 192
+6 e = rnd(-1192)
 
 30 dim triangles(12*20)
 40 ntriangles = 0
@@ -22,48 +23,55 @@
 102 rem rotation of 0 is in the +z direction; angles are 0-2π
 103 rem FOV is linear and represents how many px a meter is
 
-120 triangles(0) = 0
-121 triangles(1) = 0
-122 triangles(2) = 1
+120 dim map(30*30*2)
+121 rem represents the map; 0 = wall, 1 = clear, 2 = enemy, 3 = gold
+130 difficulty = 0.99
+140 gosub 4000
+150 for r=0 to 29
+160 for c=0 to 29
+170 if maze(30*r+c) == 1 then print " ";
+180 if maze(30*r+c) >< 1 then print "#";
+190 next c
+200 print ""
+210 next r
+220 end
 
-123 triangles(3) = 10
-124 triangles(4) = 0
-125 triangles(5) = 1
+4000 rem subroutine that generates a level
+4010 rem operates on the lists "objects" and "map"
+4020 rem takes difficulty as input (0 - 1)
+4030 dim snakes(5*2)
+4040 snakes(0) = 0
+4050 snakes(1) = 0
+4060 snakes(2) = -1: snakes(3) = -1: snakes(4) = -1: snakes(5) = -1: snakes(6) = -1: snakes(7) = -1: snakes(8) = -1: snakes(9) = -1:
 
-126 triangles(6) = 0
-127 triangles(7) = 10
-128 triangles(8) = 1
+4080 for s=0 to 4
+4090 if snakes(s*2) == -1 and snakes(s*2+1) == -1 then next s: goto 4410
 
-129 ntriangles = 0
+4100 r = rnd(1)
+4110 if r < 0.25 and snakes(s*2) > 0 then snakes(s*2) = snakes(s*2) - 1: goto 4150
+4120 if r < 0.5 and snakes(s*2) < 29 then snakes(s*2) = snakes(s*2) + 1: goto 4150
+4130 if r < 0.75 and snakes(s*2+1) > 0 then snakes(s*2+1) = snakes(s*2+1) - 1: goto 4150
+4140 if r < 1 and snakes(s*2+1) < 29 then snakes(s*2+1) = snakes(s*2+1) + 1: goto 4150
 
-130 rectangles(0) = -1
-131 rectangles(1) = -1
-132 rectangles(2) = 1
+4150 map(snakes(s*2)*30 + snakes(s*2+1)) = 1
 
-133 rectangles(3) = -1
-134 rectangles(4) = 1
-135 rectangles(5) = 1
+4230 if rnd(1) < difficulty * 0.2 then goto 4260
+4240 if rnd(1) < (1 - difficulty) * 0.2 then snakes(s*2) = -1: snakes(s*2+1) = -1
+4250 goto 4400
 
-136 rectangles(6) = 1
-137 rectangles(7) = 1
-138 rectangles(8) = 1
+4259 rem splitting code
+4260 for ns=0 to 4
+4270 if snakes(ns) >< -1 and snakes(1) >< -1 then next s
+4280 snakes(ns*2) = snakes(s*2)
+4290 snakes(ns*2+1) = snakes(ns*2) + 1
 
-139 rectangles(9) = 1
-140 rectangles(10) = -1
-141 rectangles(11) = 1
+4400 next s
 
-142 nrectangles = 1
+4410 for s=0 to 4
+4420 if snakes(s*2) >< -1 and snakes(s*2+1) >< -1 then goto 4080
+4430 next s
 
-143 for i=0 to 200
-145 nrectangles = 1
-146 yrot = yrot + 0.1
-149 HCOLOR = 3
-150 gosub 5900
-152 nrectangles = 1
-153 HCOLOR = 0
-154 gosub 5900
-155 next i
-160 end
+4500 return
 
 5900 rem subprotocol to draw all existing objects in the frame
 5910 rem does not compute occlusion
