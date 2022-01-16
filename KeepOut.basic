@@ -3,38 +3,101 @@
 3 PI = 3.141592653
 4 xscreen = 280
 5 yscreen = 192
-6 e = rnd(-1192)
+6 e = rnd(-1298472)
+7 csize = 2
+8 rem size of a cell, in meters
 
-30 dim triangles(12*20)
+30 dim triangles(12*1000)
 40 ntriangles = 0
-50 dim rectangles(16*20)
+50 dim rectangles(16*1000)
 60 nrectangles = 0
 61 rem to draw a triangle, add the relevant points to triangles -
 62 rem x1,y1,z1,x2,y2,z2,x3,y3,z3 - and increment ntriangles
 63 rem drawing a rectangle is the analagous with appropriate variables
-64 rem the arrays have space for 20 at once
+64 rem the arrays have space for 1000 at once
 
-70 xcamera = 0
+70 xcamera = 0.5
 80 ycamera = 0
-90 zcamera = 5
+90 zcamera = 0.5
 100 yrot = 0
 110 FOV = 120
 101 rem choosing to ignore x and z rotation as they are not needed for this
 102 rem rotation of 0 is in the +z direction; angles are 0-2π
 103 rem FOV is linear and represents how many px a meter is
 
+110 dim c1(2), c2(2)
+111 rem used for cell wall drawing
+
 120 dim map(30*30*2)
 121 rem represents the map; 0 = wall, 1 = clear, 2 = enemy, 3 = gold
-130 difficulty = 0.99
+130 difficulty = 0.95
 140 gosub 4000
-150 for r=0 to 29
-160 for c=0 to 29
-170 if maze(30*r+c) == 1 then print " ";
-180 if maze(30*r+c) >< 1 then print "#";
-190 next c
-200 print ""
-210 next r
-220 end
+
+200 rem GAME LOOP
+210 keystroke = peek(-16384)
+220 if keystroke < 128 then goto 200
+230 poke -16368,0
+240 keystroke = keystroke - 128 + 32
+241 print keystroke
+250 if keystroke == asc("w") then zcamera = zcamera + 1
+260 if keystroke == asc("a") then xcamera = xcamera - 1
+270 if keystroke == asc("s") then zcamera = zcamera - 1
+280 if keystroke == asc("d") then xcamera = xcamera + 1
+290 if keystroke == asc("q") then yrot = yrot - PI/2
+300 if keystroke == asc("e") then yrot = yrot + PI/2
+310 gosub 3000
+320 goto 200
+
+3000 rem subroutine that draws a level
+3010 for x=1 to 28
+3020 for y=1 to 28
+
+3030 if map(x*30+y) == 0 then goto 3080
+
+3040 if map((x+1)*30+y) >< 0 then c1(0)=x: c1(1)=y: c2(0)=x+1: c2(1)=y: gosub 3500
+3050 if map((x-1)*30+y) >< 0 then c1(0)=x: c1(1)=y: c2(0)=x-1: c2(1)=y: gosub 3500
+3060 if map(x*30+(y+1)) >< 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y+1: gosub 3500
+3070 if map(x*30+(y-1)) >< 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y-1: gosub 3500
+
+3080 next y
+3090 next x
+3100 gosub 5900
+3110 return
+
+3500 rem subroutine that draws a wall between at the boundary
+3510 rem of 2 cells - c1 and c2, xy pairs
+3520 xmid = (c1(0) + c2(0))/2
+3530 zmid = (c1(1) + c2(1))/2
+3540 if c1(0) == c2(0) then goto 3750
+
+3550 rectangles(12*nrectangles+0) = xmid*csize + csize/2
+3560 rectangles(12*nrectangles+1) = csize
+3570 rectangles(12*nrectangles+2) = zmid
+3580 rectangles(12*nrectangles+3) = xmid*csize - csize/2
+3590 rectangles(12*nrectangles+4) = csize
+3600 rectangles(12*nrectangles+5) = zmid
+3610 rectangles(12*nrectangles+6) = xmid*csize + csize/2
+3620 rectangles(12*nrectangles+7) = 0
+3630 rectangles(12*nrectangles+8) = zmid
+3640 rectangles(12*nrectangles+9) = xmid*csize - csize/2
+3650 rectangles(12*nrectangles+10) = 0
+3660 rectangles(12*nrectangles+11) = zmid
+
+3750 rectangles(12*nrectangles+0) = xmid
+3760 rectangles(12*nrectangles+1) = csize
+3770 rectangles(12*nrectangles+2) = zmid*csize + csize/2
+3780 rectangles(12*nrectangles+3) = xmid
+3790 rectangles(12*nrectangles+4) = csize
+3800 rectangles(12*nrectangles+5) = zmid*csize - csize/2
+3810 rectangles(12*nrectangles+6) = xmid
+3820 rectangles(12*nrectangles+7) = 0
+3830 rectangles(12*nrectangles+8) = zmid*csize + csize/2
+3840 rectangles(12*nrectangles+9) = xmid
+3840 rectangles(12*nrectangles+10) = 0
+3860 rectangles(12*nrectangles+11) = zmid*csize - csize/2
+
+3900 nrectangles = nrectangles + 1
+3910 return
 
 4000 rem subroutine that generates a level
 4010 rem operates on the lists "objects" and "map"
@@ -54,6 +117,8 @@
 4140 if r < 1 and snakes(s*2+1) < 29 then snakes(s*2+1) = snakes(s*2+1) + 1: goto 4150
 
 4150 map(snakes(s*2)*30 + snakes(s*2+1)) = 1
+4160 if rnd(1) < 0.1 then map(snakes(s*2)*30 + snakes(s*2+1)) = 2
+4170 if rnd(1) < 0.1 then map(snakes(s*2)*30 + snakes(s*2+1)) = 3
 
 4230 if rnd(1) < difficulty * 0.2 then goto 4260
 4240 if rnd(1) < (1 - difficulty) * 0.2 then snakes(s*2) = -1: snakes(s*2+1) = -1
@@ -209,5 +274,5 @@
 8140 oz = tz
 8150 tx = ox * cos(yrot) - oz * sin(yrot)
 8160 tz = ox * sin(yrot) + oz * cos(yrot)
-8165 if tz < 0 then tz = 0.0001
+8165 if tz <= 0.05 then tz = 0.0001
 8170 return
