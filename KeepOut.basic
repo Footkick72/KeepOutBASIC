@@ -36,21 +36,28 @@
 130 difficulty = 0.7
 140 gosub 4000
 
+190 hiresmode = 1
 200 rem GAME LOOP
 210 keystroke = peek(-16384)
 220 if keystroke < 128 then goto 200
-230 HCOLOR=0: gosub 5900: ntriangles = 0: nrectangles = 0
-240 poke -16368,0
-250 keystroke = keystroke - 128 + 32
-260 if keystroke == asc("w") then zcamera = zcamera - csize
-270 if keystroke == asc("a") then xcamera = xcamera + csize
-280 if keystroke == asc("s") then zcamera = zcamera + csize
-290 if keystroke == asc("d") then xcamera = xcamera - csize
-300 if keystroke == asc("q") then yrot = yrot - PI/2
-310 if keystroke == asc("e") then yrot = yrot + PI/2
-320 gosub 3000
-330 HCOLOR=3: gosub 5900
-340 goto 200
+
+250 poke -16368,0
+260 keystroke = keystroke - 128 + 32
+270 if keystroke == asc("w") then zcamera = zcamera - csize
+280 if keystroke == asc("a") then xcamera = xcamera + csize
+290 if keystroke == asc("s") then zcamera = zcamera + csize
+300 if keystroke == asc("d") then xcamera = xcamera - csize
+310 if keystroke == asc("q") then yrot = yrot - PI/2
+320 if keystroke == asc("e") then yrot = yrot + PI/2
+
+330 if hiresmode == 0 then poke 230,32: goto 350
+340 if hiresmode == 1 then poke 230,64: goto 350
+350 call 62450
+360 gosub 3000
+370 gosub 5900
+380 if hiresmode == 0 then hiresmode = 1: POKE -16300,0: goto 400
+390 if hiresmode == 1 then hiresmode = 0: POKE -16299,0: goto 400
+400 goto 200
 
 3000 rem subroutine that draws a level
 3010 for x=1 to 28
