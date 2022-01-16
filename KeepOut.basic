@@ -18,7 +18,7 @@
 
 70 xcamera = 0
 80 ycamera = -csize/2
-90 zcamera = 2
+90 zcamera = 0
 100 yrot = 0
 110 FOV = 120
 111 rem choosing to ignore x and z rotation as they are not needed for this
@@ -40,15 +40,16 @@
 200 rem GAME LOOP
 210 keystroke = peek(-16384)
 220 if keystroke < 128 then goto 200
+230 poke -16368,0
 
-250 poke -16368,0
-260 keystroke = keystroke - 128 + 32
-270 if keystroke == asc("w") then zcamera = zcamera - csize*cos(yrot): xcamera = xcamera - csize*sin(yrot)
-280 if keystroke == asc("a") then zcamera = zcamera - csize*sin(yrot): xcamera = xcamera + csize*cos(yrot)
-290 if keystroke == asc("s") then zcamera = zcamera + csize*cos(yrot): xcamera = xcamera + csize*sin(yrot)
-300 if keystroke == asc("d") then zcamera = zcamera + csize*sin(yrot): xcamera = xcamera - csize*cos(yrot)
-310 if keystroke == asc("q") then yrot = yrot - PI/2
-320 if keystroke == asc("e") then yrot = yrot + PI/2
+240 keystroke = keystroke - 128 + 32
+250 if keystroke == asc("w") then znext = zcamera - csize*cos(yrot): xnext = xcamera - csize*sin(yrot)
+260 if keystroke == asc("a") then znext = zcamera - csize*sin(yrot): xnext = xcamera + csize*cos(yrot)
+270 if keystroke == asc("s") then znext = zcamera + csize*cos(yrot): xnext = xcamera + csize*sin(yrot)
+280 if keystroke == asc("d") then znext = zcamera + csize*sin(yrot): xnext = xcamera - csize*cos(yrot)
+290 if keystroke == asc("q") then yrot = yrot - PI/2
+300 if keystroke == asc("e") then yrot = yrot + PI/2
+310 if map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) == 1 or map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) == 3 or map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) == 2 then zcamera = znext: xcamera = xnext
 
 330 if hiresmode == 0 then poke 230,32: goto 350
 340 if hiresmode == 1 then poke 230,64: goto 350
