@@ -33,7 +33,7 @@
 122 map(i)=0
 123 rem represents the map; 0 = wall, 1 = clear, 2 = enemy, 3 = gold
 
-130 difficulty = 0.7
+130 difficulty = 0.8
 140 gosub 4000
 
 190 hiresmode = 1
@@ -62,19 +62,26 @@
 400 goto 200
 
 3000 rem subroutine that draws a level
-3010 for x=1 to 28
-3020 for y=1 to 28
+3010 for x=0 to 29
+3020 for y=0 to 29
 
-3030 if map(x*30+y) == 0 then goto 3080
+3030 if map(x*30+y) == 0 then goto 3180
 
-3040 if map((x+1)*30+y) == 0 then c1(0)=x: c1(1)=y: c2(0)=x+1: c2(1)=y: gosub 3500
-3050 if map((x-1)*30+y) == 0 then c1(0)=x: c1(1)=y: c2(0)=x-1: c2(1)=y: gosub 3500
-3060 if map(x*30+(y+1)) == 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y+1: gosub 3500
-3070 if map(x*30+(y-1)) == 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y-1: gosub 3500
+3040 if x+1 == 30 then c1(0)=x: c1(1)=y: c2(0)=x+1: c2(1)=y: gosub 3500: goto 3060
+3050 if map((x+1)*30+y) == 0 then c1(0)=x: c1(1)=y: c2(0)=x+1: c2(1)=y: gosub 3500
 
-3080 next y
-3090 next x
-3100 return
+3060 if x-1 == -1 then c1(0)=x: c1(1)=y: c2(0)=x-1: c2(1)=y: gosub 3500: goto 3080
+3070 if map((x-1)*30+y) == 0 then c1(0)=x: c1(1)=y: c2(0)=x-1: c2(1)=y: gosub 3500
+
+3080 if y+1 == 30 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y+1: gosub 3500: goto 3100
+3090 if map(x*30+(y+1)) == 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y+1: gosub 3500
+
+3100 if y-1 == -1 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y-1: gosub 3500: goto 3180
+3110 if map(x*30+(y-1)) == 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y-1: gosub 3500
+
+3180 next y
+3190 next x
+3200 return
 
 3500 rem subroutine that draws a wall between at the boundary
 3510 rem of 2 cells - c1 and c2, xy pairs
