@@ -49,7 +49,8 @@
 280 if keystroke == asc("d") then znext = zcamera + csize*sin(yrot): xnext = xcamera - csize*cos(yrot)
 290 if keystroke == asc("q") then yrot = yrot - PI/2
 300 if keystroke == asc("e") then yrot = yrot + PI/2
-310 if map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) == 1 or map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) == 3 or map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) == 2 then zcamera = znext: xcamera = xnext
+310 if xnext > 0 or znext > 0 then goto 330
+320 if map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) == 1 or map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) == 3 or map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) == 2 then zcamera = znext: xcamera = xnext
 
 330 if hiresmode == 0 then poke 230,32: goto 350
 340 if hiresmode == 1 then poke 230,64: goto 350
@@ -121,38 +122,40 @@
 4000 rem subroutine that generates a level
 4010 rem operates on the lists "objects" and "map"
 4020 rem takes difficulty as input (0 - 1)
-4030 dim snakes(5*2)
+4030 dim snakes(5*3)
 4040 snakes(0) = 0
 4050 snakes(1) = 0
-4060 snakes(2) = -1: snakes(3) = -1: snakes(4) = -1: snakes(5) = -1: snakes(6) = -1: snakes(7) = -1: snakes(8) = -1: snakes(9) = -1:
-
+4060 snakes(2) = 0
+4070 snakes(3) = -1: snakes(4) = -1: snakes(5) = -1: snakes(6) = -1: snakes(7) = -1: snakes(8) = -1: snakes(9) = -1: snakes(10) = -1: snakes(11) = -1: snakes(12) = -1: snakes(13) = -1: snakes(13) = -1: snakes(14) = -1
 4080 for s=0 to 4
-4090 if snakes(s*2) == -1 and snakes(s*2+1) == -1 then next s: goto 4410
+4090 if snakes(s*3) == -1 and snakes(s*3+1) == -1 and snakes(s*3+2) == -1 then goto 4400
 
-4100 r = rnd(1)
-4110 if r < 0.25 and snakes(s*2) > 0 then snakes(s*2) = snakes(s*2) - 1: goto 4150
-4120 if r < 0.5 and snakes(s*2) < 29 then snakes(s*2) = snakes(s*2) + 1: goto 4150
-4130 if r < 0.75 and snakes(s*2+1) > 0 then snakes(s*2+1) = snakes(s*2+1) - 1: goto 4150
-4140 if r < 1 and snakes(s*2+1) < 29 then snakes(s*2+1) = snakes(s*2+1) + 1: goto 4150
+4099 rem print snakes(s*3);" ";snakes(s*3+1);" ";snakes(s*3+2);" ";s*3+2;" ";s;" SNAKE"
+4100 if rnd(1) < 0.2 then snakes(s*3+2) = int(4*rnd(1))
+4120 if snakes(s*3+2) == 0 and snakes(s*3) > 0 then snakes(s*3) = snakes(s*3) - 1: goto 4160
+4130 if snakes(s*3+2) == 1 and snakes(s*3) < 29 then snakes(s*3) = snakes(s*3) + 1: goto 4160
+4140 if snakes(s*3+2) == 2 and snakes(s*3+1) > 0 then snakes(s*3+1) = snakes(s*3+1) - 1: goto 4160
+4150 if snakes(s*3+2) == 3 and snakes(s*3+1) < 29 then snakes(s*3+1) = snakes(s*3+1) + 1: goto 4160
 
-4150 map(snakes(s*2)*30 + snakes(s*2+1)) = 1
-4160 if rnd(1) < 0.1 then map(snakes(s*2)*30 + snakes(s*2+1)) = 2
-4170 if rnd(1) < 0.1 then map(snakes(s*2)*30 + snakes(s*2+1)) = 3
+4160 map(snakes(s*3)*30 + snakes(s*3+1)) = 1
+4170 if rnd(1) < 0.1 then map(snakes(s*3)*30 + snakes(s*3+1)) = 2
+4180 if rnd(1) < 0.1 then map(snakes(s*3)*30 + snakes(s*3+1)) = 3
 
 4230 if rnd(1) < difficulty * 0.2 then goto 4260
-4240 if rnd(1) < (1 - difficulty) * 0.2 then snakes(s*2) = -1: snakes(s*2+1) = -1
+4240 if rnd(1) < (1 - difficulty) * 0.2 then snakes(s*3) = -1: snakes(s*3+1) = -1: snakes(s*3+2) = -1
 4250 goto 4400
 
 4259 rem splitting code
 4260 for ns=0 to 4
-4270 if snakes(ns) >< -1 and snakes(1) >< -1 then next s
-4280 snakes(ns*2) = snakes(s*2)
-4290 snakes(ns*2+1) = snakes(ns*2) + 1
+4270 if snakes(ns*3) >< -1 and snakes(ns*3+1) >< -1 and snakes(ns*3+2) >< -1 then next s
+4280 snakes(ns*3) = snakes(s*3)
+4290 snakes(ns*3+1) = snakes(ns*3+1)
+4300 snakes(ns*3+2) = int(4*rnd(1))
 
 4400 next s
 
 4410 for s=0 to 4
-4420 if snakes(s*2) >< -1 and snakes(s*2+1) >< -1 then goto 4080
+4420 if snakes(s*3) >< -1 and snakes(s*3+1) >< -1 and snakes(s*3+2) >< -1 then goto 4080
 4430 next s
 
 4500 return
