@@ -25,7 +25,7 @@
 112 rem rotation of 0 is in the +z direction; angles are 0-2π
 113 rem FOV is linear and represents how many px a meter is
 
-114 dim c1(2), c2(2)
+114 dim c1(2), c2(2), frontier(60), nfrontier(60), ahead(2), sideways(2), f1(2), f2(2), f3(2)
 115 rem used for cell wall drawing
 
 120 dim map(30*30)
@@ -50,7 +50,7 @@
 290 if keystroke == asc("q") then yrot = yrot - PI/2
 300 if keystroke == asc("e") then yrot = yrot + PI/2
 310 if xnext > 0 or znext > 0 then goto 330
-320 if map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) == 1 or map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) == 3 or map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) == 2 then zcamera = znext: xcamera = xnext
+320 if map(-int(xnext+0.1)/csize*30-int(znext+0.1)/csize) >< 0 then zcamera = int(znext+0.1): xcamera = int(xnext+0.1)
 
 330 if hiresmode == 0 then poke 230,32: goto 350
 340 if hiresmode == 1 then poke 230,64: goto 350
@@ -62,26 +62,59 @@
 400 goto 200
 
 3000 rem subroutine that draws a level
-3010 for x=0 to 29
-3020 for y=0 to 29
+3010 depth = 0
+3020 ahead(0) = int(sin(yrot)+0.1): ahead(1) = int(cos(yrot)+0.1)
+3030 sideways(0) = int(cos(yrot)+0.1): sideways(1) = -int(sin(yrot)+0.1)
+3040 frontier(30) = 1
 
-3030 if map(x*30+y) == 0 then goto 3180
+3050 depth = depth + 1
+3060 for i=0 to 59
+3070 if frontier(i) == 0 then goto 3200
 
-3040 if x+1 == 30 then c1(0)=x: c1(1)=y: c2(0)=x+1: c2(1)=y: gosub 3500: goto 3060
-3050 if map((x+1)*30+y) == 0 then c1(0)=x: c1(1)=y: c2(0)=x+1: c2(1)=y: gosub 3500
+3080 xgrid = -xcamera/csize: zgrid = -zcamera/csize: x=xgrid: y=zgrid: gosub 3310
+3090 xdist = xgrid + ahead(0)*depth: zdist = zgrid + ahead(1)*depth
+3100 ishift = i-30
+3110 f1(0) = xdist+(ishift+1)*sideways(0): f1(1) = zdist+(ishift+1)*sideways(1)
+3120 f2(0) = xdist+(ishift)*sideways(0): f2(1) = zdist+(ishift)*sideways(1)
+3130 f3(0) = xdist+(ishift-1)*sideways(0): f3(1) = zdist+(ishift-1)*sideways(1)
 
-3060 if x-1 == -1 then c1(0)=x: c1(1)=y: c2(0)=x-1: c2(1)=y: gosub 3500: goto 3080
-3070 if map((x-1)*30+y) == 0 then c1(0)=x: c1(1)=y: c2(0)=x-1: c2(1)=y: gosub 3500
+3140 if f1(0) < 0 or f1(0) > 29 or f1(1) < 0 or f1(1) > 29 then goto 3160
+3150 if map(f1(0)*30 + f1(1)) >< 0 and nfrontier(i-1) == 0 then nfrontier(i-1)=1: x = f1(0): y = f1(1): gosub 3310
 
-3080 if y+1 == 30 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y+1: gosub 3500: goto 3100
-3090 if map(x*30+(y+1)) == 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y+1: gosub 3500
+3160 if f2(0) < 0 or f2(0) > 29 or f2(1) < 0 or f2(1) > 29 then goto 3180
+3170 if map(f2(0)*30 + f2(1)) >< 0 and nfrontier(i) == 0 then nfrontier(i)=1: x = f2(0): y = f2(1): gosub 3310
 
-3100 if y-1 == -1 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y-1: gosub 3500: goto 3180
-3110 if map(x*30+(y-1)) == 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y-1: gosub 3500
+3180 if f3(0) < 0 or f3(0) > 29 or f3(1) < 0 or f3(1) > 29 then goto 3200
+3190 if map(f3(0)*30 + f3(1)) >< 0 and nfrontier(i+1) == 0 then nfrontier(i+1)=1: x = f3(0): y = f3(1): gosub 3310
+3200 next i
 
-3180 next y
-3190 next x
-3200 return
+3210 f = 0
+3220 for i=0 to 59
+3230 frontier(i) = nfrontier(i)
+3240 nfrontier(i) = 0
+3270 if frontier(i) == 1 then f=1
+3280 next i
+
+3290 if f == 1 then goto 3050
+3300 return
+
+3310 rem subroutine that draws a cell with all boundaries
+3320 rem takes input as x and y for cell coordinates
+3330 if map(x*30+y) == 0 then return
+
+3340 if x+1 == 30 then c1(0)=x: c1(1)=y: c2(0)=x+1: c2(1)=y: gosub 3500: goto 3360
+3350 if map((x+1)*30+y) == 0 then c1(0)=x: c1(1)=y: c2(0)=x+1: c2(1)=y: gosub 3500
+
+3360 if x-1 == -1 then c1(0)=x: c1(1)=y: c2(0)=x-1: c2(1)=y: gosub 3500: goto 3380
+3370 if map((x-1)*30+y) == 0 then c1(0)=x: c1(1)=y: c2(0)=x-1: c2(1)=y: gosub 3500
+
+3380 if y+1 == 30 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y+1: gosub 3500: goto 3400
+3390 if map(x*30+(y+1)) == 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y+1: gosub 3500
+
+3400 if y-1 == -1 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y-1: gosub 3500: goto 3420
+3410 if map(x*30+(y-1)) == 0 then c1(0)=x: c1(1)=y: c2(0)=x: c2(1)=y-1: gosub 3500
+
+3420 return
 
 3500 rem subroutine that draws a wall between at the boundary
 3510 rem of 2 cells - c1 and c2, xy pairs
@@ -137,7 +170,6 @@
 4080 for s=0 to 4
 4090 if snakes(s*3) == -1 and snakes(s*3+1) == -1 and snakes(s*3+2) == -1 then goto 4400
 
-4099 rem print snakes(s*3);" ";snakes(s*3+1);" ";snakes(s*3+2);" ";s*3+2;" ";s;" SNAKE"
 4100 if rnd(1) < 0.2 then snakes(s*3+2) = int(4*rnd(1))
 4120 if snakes(s*3+2) == 0 and snakes(s*3) > 0 then snakes(s*3) = snakes(s*3) - 1: goto 4160
 4130 if snakes(s*3+2) == 1 and snakes(s*3) < 29 then snakes(s*3) = snakes(s*3) + 1: goto 4160
