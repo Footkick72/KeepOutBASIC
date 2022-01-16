@@ -279,8 +279,14 @@
 
 7998 rem subprotocol to draw a line clipped to screen
 7999 rem takes input as sx, sy, ex, ey (start end x y)
-8000 if sx > 0 and sx < xscreen and ex > 0 and ex < xscreen and sy > 0 and sy < yscreen and ey > 0 and ey < yscreen then hplot sx, sy to ex, ey
-8010 return
+8000 r = 0
+8010 if (sx < 0 and ex < 0) or (sx > xscreen and ex > xscreen) or (sy < 0 and ey < 0) or (sy > yscreen and ey > yscreen) then return
+8020 if sx < 0 then t = sx: sx = 0: sy = (abs(t-0)/abs(t-ex))*ey + (1-abs(t-0)/abs(t-ex))*sy
+8030 if sy < 0 then t = sy: sy = 0: sx = (abs(t-0)/abs(t-ey))*ex + (1-abs(t-0)/abs(t-ey))*sx
+8040 if sx >= xscreen then t = sx: sx = xscreen-1: sy = (abs(t-xscreen+1)/abs(t-ex))*ey + (1-abs(t-xscreen+1)/abs(t-ex))*sy
+8050 if sy >= yscreen then t = sy: sy = yscreen-1: sx = (abs(t-yscreen+1)/abs(t-ey))*ex + (1-abs(t-yscreen+1)/abs(t-ey))*sx
+8060 if r = 0 then r = 1: tx = sx: ty = sy: sx = ex: sy = ey: ex = tx: ey = ty: goto 8010
+8070 hplot sx, sy to ex, ey
 
 8098 rem subprotocol to transform x,y,z coordinates into camera space for drawing
 8099 rem takes input as tx, ty, tz (transform x y z)
