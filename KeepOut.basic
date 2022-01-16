@@ -43,10 +43,10 @@
 
 250 poke -16368,0
 260 keystroke = keystroke - 128 + 32
-270 if keystroke == asc("w") then zcamera = zcamera - csize
-280 if keystroke == asc("a") then xcamera = xcamera + csize
-290 if keystroke == asc("s") then zcamera = zcamera + csize
-300 if keystroke == asc("d") then xcamera = xcamera - csize
+270 if keystroke == asc("w") then zcamera = zcamera - csize*cos(yrot): xcamera = xcamera - csize*sin(yrot)
+280 if keystroke == asc("a") then zcamera = zcamera - csize*sin(yrot): xcamera = xcamera + csize*cos(yrot)
+290 if keystroke == asc("s") then zcamera = zcamera + csize*cos(yrot): xcamera = xcamera + csize*sin(yrot)
+300 if keystroke == asc("d") then zcamera = zcamera + csize*sin(yrot): xcamera = xcamera - csize*cos(yrot)
 310 if keystroke == asc("q") then yrot = yrot - PI/2
 320 if keystroke == asc("e") then yrot = yrot + PI/2
 
